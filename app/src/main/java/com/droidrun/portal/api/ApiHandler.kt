@@ -40,6 +40,7 @@ import android.app.NotificationManager
 import androidx.core.app.NotificationCompat
 import com.droidrun.portal.state.AppVisibilityTracker
 import com.droidrun.portal.ui.PermissionDialogActivity
+import android.os.PowerManager
 
 class ApiHandler(
     private val stateRepo: StateRepository,
@@ -518,6 +519,41 @@ class ApiHandler(
 
     fun getTime(): ApiResponse {
         return ApiResponse.Success(System.currentTimeMillis())
+    }
+
+    fun wakeScreen(): ApiResponse {
+        return try {
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                if (!powerManager.isInteractive) {
+                    @Suppress("DEPRECATION")
+                    val wakeLock = powerManager.newWakeLock(
+                        PowerManager.FULL_WAKE_LOCK or
+                        PowerManager.ACQUIRE_CAUSES_WAKEUP or
+                        PowerManager.ON_AFTER_RELEASE,
+                        "DroidrunPortal:WakeScreen"
+                    )
+                    wakeLock.acquire(3000L)
+                    ApiResponse.Success("Screen woken up")
+                } else {
+                    ApiResponse.Success("Screen already on")
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                val wakeLock = powerManager.newWakeLock(
+                    PowerManager.FULL_WAKE_LOCK or
+                    PowerManager.ACQUIRE_CAUSES_WAKEUP or
+                    PowerManager.ON_AFTER_RELEASE,
+                    "DroidrunPortal:WakeScreen"
+                )
+                wakeLock.acquire(3000L)
+                ApiResponse.Success("Screen woken up")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to wake screen", e)
+            ApiResponse.Error("Failed to wake screen: ${e.message}")
+        }
     }
 
     fun installApp(

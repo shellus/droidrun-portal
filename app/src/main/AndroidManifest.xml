@@ -8,6 +8,8 @@
 
     <!-- Permission for socket communication -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Permission to wake up screen -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <!-- Permissions for WebRTC streaming -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
