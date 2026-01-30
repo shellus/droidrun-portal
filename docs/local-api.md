@@ -65,6 +65,9 @@ Response format:
 | `version` | - | App version |
 | `time` | - | Unix ms timestamp |
 | `wake` | - | Wake screen from sleep/AOD mode |
+| `lock` | - | Lock screen (requires Device Admin) |
+| `screen/off` | - | Show black overlay (simulated screen off) |
+| `screen/on` | - | Hide black overlay |
 | `install` | `urls`, `hideOverlay` | WebSocket only; supports split APKs |
 
 Streaming methods (`stream/start`, `stream/stop`, `webrtc/*`) are only available over reverse connection.
