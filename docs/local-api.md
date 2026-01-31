@@ -1,32 +1,32 @@
-# Local API
+# 本地 API
 
-Droidrun Portal exposes local control over HTTP, WebSocket, and ContentProvider. Use these when the device is on the same network or connected via ADB.
+Droidrun Portal 通过 HTTP、WebSocket 和 ContentProvider 提供本地控制接口。适用于设备在同一网络或通过 ADB 连接的场景。
 
-## Auth token
+## 认证令牌
 
-Local HTTP and WebSocket access require a token (except `GET /ping`). You can copy it from the main screen or query it via ADB:
+本地 HTTP 和 WebSocket 访问需要令牌（`GET /ping` 除外）。可从主界面复制或通过 ADB 查询：
 
 ```bash
 adb shell content query --uri content://com.droidrun.portal/auth_token
 ```
 
-Response example:
+响应示例：
 
 ```json
 {"status":"success","result":"YOUR_TOKEN"}
 ```
 
-## WebSocket (JSON-RPC-style)
+## WebSocket（JSON-RPC 风格）
 
-Enable **WebSocket Server** in Settings. Default port is `8081`.
+在设置中启用 **WebSocket 服务器**，默认端口 `8081`。
 
-Connect with an auth token:
+使用令牌连接：
 
 ```bash
 wscat -c "ws://localhost:8081/?token=YOUR_TOKEN"
 ```
 
-Request format:
+请求格式：
 
 ```json
 {
@@ -36,7 +36,7 @@ Request format:
 }
 ```
 
-Response format:
+响应格式：
 
 ```json
 {
@@ -46,65 +46,65 @@ Response format:
 }
 ```
 
-### Supported methods
+### 支持的方法
 
-| Method | Params | Notes |
+| 方法 | 参数 | 说明 |
 | --- | --- | --- |
-| `tap` | `x`, `y` | Tap screen coordinates |
-| `swipe` | `startX`, `startY`, `endX`, `endY`, `duration` | Duration in ms (optional) |
-| `global` | `action` | Accessibility global action ID |
-| `app` | `package`, `activity` | `activity` optional |
-| `keyboard/input` | `base64_text`, `clear` | `clear` defaults to `true` |
-| `keyboard/clear` | - | Clears focused input |
-| `keyboard/key` | `key_code` | Uses Android key codes |
-| `overlay_offset` | `offset` | Vertical offset in pixels |
-| `socket_port` | `port` | Updates HTTP server port |
-| `screenshot` | `hideOverlay` | Default `true` |
-| `packages` | - | List launchable packages |
-| `state` | `filter` | Full state; `filter=false` keeps small elements |
-| `version` | - | App version |
-| `time` | - | Unix ms timestamp |
-| `wake` | - | Wake screen from sleep/AOD mode |
-| `lock` | - | Lock screen (requires Device Admin) |
-| `screen/off` | - | Show black overlay (simulated screen off) |
-| `screen/on` | - | Hide black overlay |
-| `install` | `urls`, `hideOverlay` | WebSocket only; supports split APKs |
+| `tap` | `x`, `y` | 点击屏幕坐标 |
+| `swipe` | `startX`, `startY`, `endX`, `endY`, `duration` | duration 单位毫秒（可选） |
+| `global` | `action` | 无障碍全局操作 ID |
+| `app` | `package`, `activity` | `activity` 可选 |
+| `keyboard/input` | `base64_text`, `clear` | `clear` 默认 `true` |
+| `keyboard/clear` | - | 清空焦点输入框 |
+| `keyboard/key` | `key_code` | 使用 Android 按键码 |
+| `overlay_offset` | `offset` | 垂直偏移（像素） |
+| `socket_port` | `port` | 更新 HTTP 服务器端口 |
+| `screenshot` | `hideOverlay` | 默认 `true` |
+| `packages` | - | 列出可启动应用 |
+| `state` | `filter` | 完整状态；`filter=false` 保留小元素 |
+| `version` | - | 应用版本 |
+| `time` | - | Unix 毫秒时间戳 |
+| `wake` | - | 唤醒屏幕 |
+| `lock` | - | 锁屏（需要设备管理员权限） |
+| `screen/off` | - | 显示黑色覆盖层（模拟息屏） |
+| `screen/on` | - | 隐藏黑色覆盖层 |
+| `install` | `urls`, `hideOverlay` | 仅 WebSocket；支持分包 APK |
 
-Streaming methods (`stream/start`, `stream/stop`, `webrtc/*`) are only available over reverse connection.
+流媒体方法（`stream/start`、`stream/stop`、`webrtc/*`）仅在反向连接中可用。
 
-Install notes:
+安装说明：
 
-- The device must allow **Install unknown apps** for Droidrun Portal.
-- Enable **Install Auto-Accept** in Settings to auto-confirm install prompts.
+- 设备必须允许 Droidrun Portal **安装未知应用**
+- 在设置中启用**自动确认安装**可自动点击安装确认
 
-### Binary screenshot responses
+### 二进制截图响应
 
-When `screenshot` returns binary data, the local WebSocket sends a binary frame:
+当 `screenshot` 返回二进制数据时，本地 WebSocket 发送二进制帧：
 
-- First 36 bytes: request ID string (UUID)
-- Remaining bytes: PNG image bytes
+- 前 36 字节：请求 ID 字符串（UUID）
+- 剩余字节：PNG 图片数据
 
-If you prefer JSON, use the HTTP `/screenshot` endpoint or reverse connection (which base64-encodes the PNG).
+如需 JSON 格式，使用 HTTP `/screenshot` 端点或反向连接（会对 PNG 进行 base64 编码）。
 
-## HTTP socket server
+## HTTP 服务器
 
-Enable **HTTP Server** in Settings. Default port is `8080`.
+在设置中启用 **HTTP 服务器**，默认端口 `8080`。
 
-Authentication header:
+认证头：
 
 ```
 Authorization: Bearer YOUR_TOKEN
 ```
 
-Example:
+示例：
 
 ```bash
 curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/ping
 ```
 
-### GET endpoints
+### GET 端点
 
-- `/ping` (no auth required)
+- `/ping`（无需认证）
 - `/a11y_tree`
 - `/a11y_tree_full?filter=true|false`
 - `/state`
@@ -112,13 +112,13 @@ curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:8080/ping
 - `/phone_state`
 - `/version`
 - `/packages`
-- `/screenshot?hideOverlay=false` (binary PNG)
+- `/screenshot?hideOverlay=false`（二进制 PNG）
 
-### POST endpoints
+### POST 端点
 
-POST requests map to the same method names as WebSocket (e.g., `/tap`, `/action/tap`, `/keyboard/input`).
+POST 请求使用与 WebSocket 相同的方法名（如 `/tap`、`/action/tap`、`/keyboard/input`）。
 
-Example:
+示例：
 
 ```bash
 curl -X POST \
@@ -128,11 +128,11 @@ curl -X POST \
   http://localhost:8080/tap
 ```
 
-## ContentProvider (ADB)
+## ContentProvider（ADB）
 
-All commands use `content://com.droidrun.portal/`.
+所有命令使用 `content://com.droidrun.portal/`。
 
-### Query
+### 查询
 
 ```bash
 adb shell content query --uri content://com.droidrun.portal/ping
@@ -146,7 +146,7 @@ adb shell content query --uri content://com.droidrun.portal/packages
 adb shell content query --uri content://com.droidrun.portal/auth_token
 ```
 
-### Insert
+### 插入
 
 ```bash
 adb shell content insert --uri content://com.droidrun.portal/keyboard/input --bind base64_text:s:"SGVsbG8="

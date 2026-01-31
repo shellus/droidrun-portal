@@ -1,39 +1,39 @@
 <resources>
     <string name="app_name">Droidrun Portal</string>
-    <string name="accessibility_service_description">Droidrun Portal identifies and visualizes UI elements on screen. This service helps to detect which elements are visible to the user by examining the layers of the UI, which is useful for UI analysis and automation.</string>
-    <string name="keyboard_name">Droidrun Keyboard</string>
-    <string name="keyboard_on">Droidrun Keyboard (ON)</string>
+    <string name="accessibility_service_description">Droidrun Portal 识别并可视化屏幕上的 UI 元素。此服务通过检查 UI 层级来检测用户可见的元素，适用于 UI 分析和自动化。</string>
+    <string name="keyboard_name">Droidrun 键盘</string>
+    <string name="keyboard_on">Droidrun 键盘（已启用）</string>
 
     <!-- Activity Main -->
-    <string name="settings_content_description">Settings</string>
-    <string name="accessibility_service_not_enabled">Accessibility Service Not Enabled</string>
-    <string name="enable_now">Enable Now</string>
-    <string name="accessibility_service">Accessibility Service</string>
-    <string name="test_fetching">Test Fetching</string>
-    <string name="notification_access_not_granted">Notification Access Not Granted</string>
-    <string name="enable">Enable</string>
-    <string name="notification_listener">Notification Listener</string>
-    <string name="post_notifications_not_granted">Notification Permission (optional - for background streaming)</string>
-    <string name="post_notifications_enabled">Notification Permission</string>
-    <string name="controls_header">Controls</string>
-    <string name="overlay_label">Overlay</string>
-    <string name="overlay_offset_label">Overlay Offset</string>
-    <string name="reset_button">Reset</string>
+    <string name="settings_content_description">设置</string>
+    <string name="accessibility_service_not_enabled">无障碍服务未启用</string>
+    <string name="enable_now">立即启用</string>
+    <string name="accessibility_service">无障碍服务</string>
+    <string name="test_fetching">测试获取</string>
+    <string name="notification_access_not_granted">通知访问权限未授予</string>
+    <string name="enable">启用</string>
+    <string name="notification_listener">通知监听</string>
+    <string name="post_notifications_not_granted">通知权限（可选 - 用于后台推流）</string>
+    <string name="post_notifications_enabled">通知权限</string>
+    <string name="controls_header">控制</string>
+    <string name="overlay_label">覆盖层</string>
+    <string name="overlay_offset_label">覆盖层偏移</string>
+    <string name="reset_button">重置</string>
     <string name="default_offset_value">0</string>
-    <string name="tip_vision_mode">Tip: Vision mode works even with overlay off</string>
-    <string name="socket_server_port_label">Socket Server Port</string>
+    <string name="tip_vision_mode">提示：关闭覆盖层后视觉模式仍可工作</string>
+    <string name="socket_server_port_label">Socket 服务器端口</string>
     <string name="default_port">8080</string>
-    <string name="connection_details_header">Connection Details</string>
-    <string name="socket_status_label">Socket Status:</string>
-    <string name="service_not_available">Service not available</string>
-    <string name="network_access_header">Network Access</string>
+    <string name="connection_details_header">连接详情</string>
+    <string name="socket_status_label">Socket 状态：</string>
+    <string name="service_not_available">服务不可用</string>
+    <string name="network_access_header">网络访问</string>
     <string name="ip_label">"IP: "</string>
-    <string name="unavailable">Unavailable</string>
-    <string name="token_label">"Token: "</string>
-    <string name="copy_token_content_description">Copy token</string>
-    <string name="adb_forward_command_header">ADB Forward Command</string>
+    <string name="unavailable">不可用</string>
+    <string name="token_label">"令牌: "</string>
+    <string name="copy_token_content_description">复制令牌</string>
+    <string name="adb_forward_command_header">ADB 转发命令</string>
     <string name="adb_forward_command_placeholder">adb forward tcp:8080 tcp:8080</string>
-    <string name="endpoints_header">Endpoints</string>
+    <string name="endpoints_header">端点</string>
     <string name="http_method_get">GET</string>
     <string name="endpoint_a11y_tree">/a11y_tree</string>
     <string name="endpoint_phone_state">/phone_state</string>
@@ -47,49 +47,49 @@
     <string name="endpoint_keyboard_clear">/keyboard/clear</string>
     <string name="endpoint_keyboard_key">/keyboard/key</string>
     <string name="endpoint_overlay_offset">/overlay_offset</string>
-    <string name="logs_link_text">Logs</string>
+    <string name="logs_link_text">日志</string>
 
     <!-- Sheet Settings -->
-    <string name="websocket_settings_header">WebSocket Settings</string>
-    <string name="server_configuration_header">SERVER CONFIGURATION</string>
-    <string name="enable_ws_server_label">Enable WS Server</string>
-    <string name="allow_external_connections_label">Allow external connections WS</string>
-    <string name="port_label">Port</string>
-    <string name="websocket_server_started">WebSocket server started on port %1$d</string>
-    <string name="reverse_connection_header">REVERSE CONNECTION (CLIENT MODE)</string>
-    <string name="connect_to_host_label">Connect to Host</string>
-    <string name="initiate_outbound_connection_label">Initiate outbound connection</string>
-    <string name="host_url_hint">Host URL (ws://...)</string>
-    <string name="token_optional_hint">Token (Optional)</string>
-    <string name="reverse_connection_connected">Reverse connection established</string>
-    <string name="reverse_connection_service_title">Reverse connection active</string>
-    <string name="reverse_connection_service_text">Keeping device connected for tasks</string>
-    <string name="reverse_connection_disconnect_action">Disconnect</string>
-    <string name="event_filters_header">EVENT FILTERS</string>
-    <string name="notifications_label">Notifications</string>
-    <string name="push_system_notifications_label">Push system notifications</string>
-    <string name="media_projection_auto_accept_failed">Screen share auto-accept failed. Please accept manually.</string>
-    <string name="install_auto_accept_label">Auto-accept App Installs</string>
-    <string name="install_auto_accept_description">Automatically confirm install prompts</string>
+    <string name="websocket_settings_header">WebSocket 设置</string>
+    <string name="server_configuration_header">服务器配置</string>
+    <string name="enable_ws_server_label">启用 WS 服务器</string>
+    <string name="allow_external_connections_label">允许外部 WS 连接</string>
+    <string name="port_label">端口</string>
+    <string name="websocket_server_started">WebSocket 服务器已在端口 %1$d 启动</string>
+    <string name="reverse_connection_header">反向连接（客户端模式）</string>
+    <string name="connect_to_host_label">连接到主机</string>
+    <string name="initiate_outbound_connection_label">发起出站连接</string>
+    <string name="host_url_hint">主机 URL (ws://...)</string>
+    <string name="token_optional_hint">令牌（可选）</string>
+    <string name="reverse_connection_connected">反向连接已建立</string>
+    <string name="reverse_connection_service_title">反向连接已激活</string>
+    <string name="reverse_connection_service_text">保持设备连接以执行任务</string>
+    <string name="reverse_connection_disconnect_action">断开连接</string>
+    <string name="event_filters_header">事件过滤</string>
+    <string name="notifications_label">通知</string>
+    <string name="push_system_notifications_label">推送系统通知</string>
+    <string name="media_projection_auto_accept_failed">屏幕共享自动接受失败，请手动接受。</string>
+    <string name="install_auto_accept_label">自动确认应用安装</string>
+    <string name="install_auto_accept_description">自动点击安装确认提示</string>
 
     <!-- Permission Dialog -->
-    <string name="permission_required_title">Permission Required</string>
-    <string name="install_permission_message">To install apps, Droidrun Portal needs permission to install from unknown sources.</string>
-    <string name="install_permission_steps">1. Tap \"Open Settings\" below\n2. Enable \"Allow from this source\"\n3. Return and try again</string>
-    <string name="open_settings">Open Settings</string>
-    <string name="cancel">Cancel</string>
+    <string name="permission_required_title">需要权限</string>
+    <string name="install_permission_message">要安装应用，Droidrun Portal 需要安装未知来源应用的权限。</string>
+    <string name="install_permission_steps">1. 点击下方"打开设置"\n2. 启用"允许来自此来源"\n3. 返回并重试</string>
+    <string name="open_settings">打开设置</string>
+    <string name="cancel">取消</string>
 
     <!-- Settings - Permissions -->
-    <string name="install_unknown_apps_label">Install Unknown Apps</string>
-    <string name="install_unknown_apps_description">Allow installing APK files</string>
+    <string name="install_unknown_apps_label">安装未知应用</string>
+    <string name="install_unknown_apps_description">允许安装 APK 文件</string>
 
     <!-- Keyboard Warning -->
-    <string name="keyboard_not_enabled_warning">Droidrun Keyboard not active. Using accessibility fallback for text input.</string>
-    <string name="select_keyboard">Select</string>
+    <string name="keyboard_not_enabled_warning">Droidrun 键盘未激活，使用无障碍服务进行文本输入。</string>
+    <string name="select_keyboard">选择</string>
 
     <!-- Device Admin -->
-    <string name="device_admin_label">Droidrun Portal Device Admin</string>
-    <string name="device_admin_description">Required for lock screen functionality. Only uses force-lock permission.</string>
-    <string name="device_admin_not_enabled_warning">Device Admin not enabled. Lock screen API unavailable.</string>
-    <string name="enable_device_admin">Enable</string>
+    <string name="device_admin_label">Droidrun Portal 设备管理员</string>
+    <string name="device_admin_description">锁屏功能所需，仅使用强制锁定权限。</string>
+    <string name="device_admin_not_enabled_warning">设备管理员未启用，锁屏 API 不可用。</string>
+    <string name="enable_device_admin">启用</string>
 </resources>

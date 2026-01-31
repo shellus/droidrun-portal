@@ -1,41 +1,42 @@
-# Reverse Connection (Cloud Mode)
+# 反向连接（云端模式）
 
-Droidrun Portal can initiate an outbound WebSocket connection to a host (used by Mobilerun Cloud). This keeps the device reachable even when it is behind NAT or on mobile networks.
+Droidrun Portal 可以主动向指定主机发起 WebSocket 连接（用于 Mobilerun Cloud）。即使设备在 NAT 后或使用移动网络，也能保持可达。
 
-## Enable in the app
+## 在应用中启用
 
-1. Open **Settings** in the Portal app.
-2. Under **Reverse Connection**, enter the host URL (ws/wss).
-3. Optional: enter a token (sent as a Bearer token).
-4. Toggle **Connect to Host**.
+1. 打开 Portal 应用的**设置**
+2. 在**反向连接**下输入主机 URL（ws/wss）
+3. 可选：输入令牌（作为 Bearer token 发送）
+4. 开启**连接到主机**
 
-## Alternative method (Simplest)
+## 替代方法（最简单）
 
-Press Connect to Mobilerun button in portal main page.
+在 Portal 主页点击"连接到 Mobilerun"按钮。
+
 ---
 
-Mobilerun default host URL:
+Mobilerun 默认主机 URL：
 
 ```
 wss://api.mobilerun.ai/v1/devices/{deviceId}/join
 ```
 
-The `{deviceId}` placeholder is replaced automatically if present.
+`{deviceId}` 占位符会自动替换。
 
-## Headers sent by the device
+## 设备发送的请求头
 
-When connecting, the device includes metadata headers:
+连接时，设备会包含以下元数据头：
 
-- `Authorization: Bearer <token>` (if set)
+- `Authorization: Bearer <token>`（如已设置）
 - `X-User-ID`
 - `X-Device-ID`
 - `X-Device-Name`
 - `X-Device-Country`
-- `X-Remote-Device-Key` (if configured)
+- `X-Remote-Device-Key`（如已配置）
 
-## Command format
+## 命令格式
 
-Reverse connection uses the same JSON-RPC-style messages as the local WebSocket API:
+反向连接使用与本地 WebSocket API 相同的 JSON-RPC 风格消息：
 
 ```json
 {
@@ -45,46 +46,46 @@ Reverse connection uses the same JSON-RPC-style messages as the local WebSocket 
 }
 ```
 
-Responses include `status` and `result` or `error`.
+响应包含 `status` 和 `result` 或 `error`。
 
-## Streaming (WebRTC)
+## 流媒体（WebRTC）
 
-Streaming commands are only supported over reverse connection.
+流媒体命令仅在反向连接中支持。
 
-### Server → device
+### 服务端 → 设备
 
 - `stream/start`
-  - Params: `width`, `height`, `fps`, `sessionId`, `waitForOffer`, `iceServers`
+  - 参数：`width`、`height`、`fps`、`sessionId`、`waitForOffer`、`iceServers`
 - `stream/stop`
-- `webrtc/answer` (for device-generated offers)
-  - Params: `sdp`
-- `webrtc/offer` (when `waitForOffer=true`)
-  - Params: `sdp`, `sessionId`
+- `webrtc/answer`（用于设备生成的 offer）
+  - 参数：`sdp`
+- `webrtc/offer`（当 `waitForOffer=true` 时）
+  - 参数：`sdp`、`sessionId`
 - `webrtc/ice`
-  - Params: `candidate`, `sdpMid`, `sdpMLineIndex`, `sessionId`
+  - 参数：`candidate`、`sdpMid`、`sdpMLineIndex`、`sessionId`
 
-`iceServers` is an array of objects with `urls` and optional `username`/`credential`.
+`iceServers` 是包含 `urls` 和可选 `username`/`credential` 的对象数组。
 
-### Device → server
+### 设备 → 服务端
 
-- `stream/ready` (sent when capture is ready)
-  - Params: `sessionId`
-- `webrtc/offer` (device-generated offer)
-  - Params: `sdp`
+- `stream/ready`（采集就绪时发送）
+  - 参数：`sessionId`
+- `webrtc/offer`（设备生成的 offer）
+  - 参数：`sdp`
 - `webrtc/ice`
-  - Params: `candidate`, `sdpMid`, `sdpMLineIndex`, `sessionId`
+  - 参数：`candidate`、`sdpMid`、`sdpMLineIndex`、`sessionId`
 - `stream/error`
-  - Params: `error`, `message`, `sessionId`
+  - 参数：`error`、`message`、`sessionId`
 - `stream/stopped`
-  - Params: `reason`, `sessionId`
+  - 参数：`reason`、`sessionId`
 
-### Streaming notes
+### 流媒体说明
 
-- On Android 13+, notification permission is required to show the background streaming prompt.
-- **Auto-accept Screen Share** in Settings can click the MediaProjection dialog automatically.
-- `stream/start` may return `prompting_user` or `waiting_for_user_notification_tap` while waiting for permission.
+- Android 13+ 需要通知权限才能显示后台推流提示
+- 设置中的**自动接受屏幕共享**可自动点击 MediaProjection 对话框
+- `stream/start` 在等待权限时可能返回 `prompting_user` 或 `waiting_for_user_notification_tap`
 
-## Configure via ContentProvider (optional)
+## 通过 ContentProvider 配置（可选）
 
 ```bash
 adb shell content insert --uri content://com.droidrun.portal/configure_reverse_connection --bind url:s:"wss://api.mobilerun.ai/v1/devices/{deviceId}/join" --bind token:s:"YOUR_TOKEN" --bind enabled:b:true
