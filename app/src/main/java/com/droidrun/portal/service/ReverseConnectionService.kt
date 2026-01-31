@@ -15,6 +15,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
 import android.widget.Toast
@@ -50,6 +51,7 @@ class ReverseConnectionService : Service() {
     }
 
     private val binder = LocalBinder()
+    private var wakeLock: PowerManager.WakeLock? = null
     private lateinit var configManager: ConfigManager
     private lateinit var actionDispatcher: ActionDispatcher
 
@@ -86,6 +88,7 @@ class ReverseConnectionService : Service() {
         }
         Log.d(TAG, "onStartCommand: Ensuring foreground...")
         ensureForeground()
+        acquireWakeLock()
         val wasRunning = isServiceRunning.getAndSet(true)
         Log.d(TAG, "onStartCommand: wasRunning=$wasRunning, now isServiceRunning=${isServiceRunning.get()}")
         if (!wasRunning) {
@@ -100,6 +103,7 @@ class ReverseConnectionService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         instance = null
+        releaseWakeLock()
         isServiceRunning.set(false)
         handler.removeCallbacksAndMessages(null)
         disconnect()
@@ -113,6 +117,29 @@ class ReverseConnectionService : Service() {
             isForeground = false
         }
         Log.i(TAG, "Service Destroyed")
+    }
+
+    private fun acquireWakeLock() {
+        if (wakeLock != null) return
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager
+        wakeLock = pm.newWakeLock(
+            PowerManager.PARTIAL_WAKE_LOCK,
+            "DroidrunPortal:ReverseConnection"
+        ).apply {
+            setReferenceCounted(false)
+            acquire()
+        }
+        Log.d(TAG, "WakeLock acquired")
+    }
+
+    private fun releaseWakeLock() {
+        wakeLock?.let {
+            if (it.isHeld) {
+                it.release()
+                Log.d(TAG, "WakeLock released")
+            }
+        }
+        wakeLock = null
     }
 
 
@@ -274,6 +301,7 @@ class ReverseConnectionService : Service() {
         handler.removeCallbacksAndMessages(null)
         ScreenCaptureService.requestStop("user_disconnect")
         disconnect()
+        releaseWakeLock()
         stopSelf()
     }
 
