@@ -25,7 +25,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
         
+      - name: Decode Keystore
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > release.keystore
+
       - name: Build with Gradle
+        env:
+          KEYSTORE_FILE: ${{ github.workspace }}/release.keystore
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           if [[ "${GITHUB_REF_TYPE}" == "tag" && "${GITHUB_REF}" == refs/tags/v* ]]; then
             VERSION_NAME="${GITHUB_REF#refs/tags/v}"
@@ -37,13 +45,13 @@ jobs:
           VERSION_CODE="${GITHUB_RUN_NUMBER}"
           export VERSION_NAME
           export VERSION_CODE
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleRelease --no-daemon
         
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: app-release
+          path: app/build/outputs/apk/release/app-release.apk
           
   release:
     needs: build
@@ -55,13 +63,13 @@ jobs:
       - name: Download built APK
         uses: actions/download-artifact@v4
         with:
-          name: app-debug
+          name: app-release
           path: artifacts
 
       - name: Rename APK with version
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}
-          mv artifacts/app-debug.apk "artifacts/droidrun-portal-${TAG_NAME}.apk"
+          mv artifacts/app-release.apk "artifacts/droidrun-portal-${TAG_NAME}.apk"
 
       - name: Create Release
         uses: softprops/action-gh-release@v1

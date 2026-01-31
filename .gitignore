@@ -15,3 +15,7 @@
 local.properties
 output
 .idea
+
+# Signing
+*.keystore
+*.jks
