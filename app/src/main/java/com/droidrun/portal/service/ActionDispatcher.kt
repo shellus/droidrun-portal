@@ -118,6 +118,22 @@ class ActionDispatcher(private val apiHandler: ApiHandler) {
                 apiHandler.getTime()
             }
 
+            "wake", "screen/wake" -> {
+                apiHandler.wakeScreen()
+            }
+
+            "lock", "screen/lock" -> {
+                apiHandler.lockScreen()
+            }
+
+            "screen/off" -> {
+                apiHandler.screenOff()
+            }
+
+            "screen/on" -> {
+                apiHandler.screenOn()
+            }
+
             "install" -> {
                 if (origin == Origin.HTTP)
                     return ApiResponse.Error("Install is only supported over WebSocket")

@@ -41,6 +41,8 @@ import android.content.BroadcastReceiver
 import android.content.IntentFilter
 import com.droidrun.portal.R
 import com.droidrun.portal.api.ApiHandler
+import com.droidrun.portal.admin.DroidrunDeviceAdminReceiver
+import android.app.admin.DevicePolicyManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -183,6 +185,11 @@ class MainActivity : AppCompatActivity(), ConfigManager.ConfigChangeListener {
         // Setup enable keyboard button
         binding.enableKeyboardButton.setOnClickListener {
             openKeyboardSettings()
+        }
+
+        // Setup enable device admin button
+        binding.enableDeviceAdminButton.setOnClickListener {
+            openDeviceAdminSettings()
         }
 
         // Setup logs link to show dialog
@@ -501,6 +508,7 @@ class MainActivity : AppCompatActivity(), ConfigManager.ConfigChangeListener {
     private fun updateStatusIndicators() {
         updateAccessibilityStatusIndicator()
         updateKeyboardWarningBanner()
+        updateDeviceAdminWarningBanner()
     }
 
     private fun syncUIWithAccessibilityService() {
@@ -852,6 +860,20 @@ class MainActivity : AppCompatActivity(), ConfigManager.ConfigChangeListener {
         }
     }
 
+    // Update device admin warning banner visibility
+    private fun updateDeviceAdminWarningBanner() {
+        val isAccessibilityEnabled = isAccessibilityServiceEnabled()
+        val isDeviceAdminEnabled = DroidrunDeviceAdminReceiver.isAdminActive(this)
+
+        // Only show the device admin warning if accessibility is enabled
+        // but device admin is not enabled (lock screen API unavailable)
+        if (isAccessibilityEnabled && !isDeviceAdminEnabled) {
+            binding.deviceAdminWarningBanner.visibility = View.VISIBLE
+        } else {
+            binding.deviceAdminWarningBanner.visibility = View.GONE
+        }
+    }
+
     // Check if DroidrunKeyboardIME is selected as the active input method
     private fun isKeyboardSelected(): Boolean {
         return DroidrunKeyboardIME.isSelected(this)
@@ -908,6 +930,30 @@ class MainActivity : AppCompatActivity(), ConfigManager.ConfigChangeListener {
             Toast.makeText(
                 this,
                 "Error opening keyboard settings",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    // Open device admin settings to enable device admin
+    private fun openDeviceAdminSettings() {
+        try {
+            val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
+                putExtra(
+                    DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                    DroidrunDeviceAdminReceiver.getComponentName(this@MainActivity)
+                )
+                putExtra(
+                    DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    getString(R.string.device_admin_description)
+                )
+            }
+            startActivity(intent)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error opening device admin settings: ${e.message}")
+            Toast.makeText(
+                this,
+                "Error opening device admin settings",
                 Toast.LENGTH_SHORT
             ).show()
         }

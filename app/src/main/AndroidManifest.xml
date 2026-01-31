@@ -8,6 +8,8 @@
 
     <!-- Permission for socket communication -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Permission to wake up screen -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <!-- Permissions for WebRTC streaming -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -128,6 +130,20 @@
                     android:host="auth-callback" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".admin.DroidrunDeviceAdminReceiver"
+            android:label="@string/device_admin_label"
+            android:description="@string/device_admin_description"
+            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:exported="true">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/device_admin" />
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

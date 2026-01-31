@@ -40,6 +40,10 @@ import android.app.NotificationManager
 import androidx.core.app.NotificationCompat
 import com.droidrun.portal.state.AppVisibilityTracker
 import com.droidrun.portal.ui.PermissionDialogActivity
+import android.os.PowerManager
+import android.app.admin.DevicePolicyManager
+import com.droidrun.portal.admin.DroidrunDeviceAdminReceiver
+import com.droidrun.portal.ui.overlay.ScreenOffOverlay
 
 class ApiHandler(
     private val stateRepo: StateRepository,
@@ -48,6 +52,7 @@ class ApiHandler(
     private val appVersionProvider: () -> String,
     private val context: Context,
 ) {
+    private val screenOffOverlay = ScreenOffOverlay(context)
     companion object {
         private const val SCREENSHOT_TIMEOUT_SECONDS = 5L
         private const val TAG = "ApiHandler"
@@ -518,6 +523,76 @@ class ApiHandler(
 
     fun getTime(): ApiResponse {
         return ApiResponse.Success(System.currentTimeMillis())
+    }
+
+    fun wakeScreen(): ApiResponse {
+        return try {
+            val powerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                if (!powerManager.isInteractive) {
+                    @Suppress("DEPRECATION")
+                    val wakeLock = powerManager.newWakeLock(
+                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK or
+                        PowerManager.ACQUIRE_CAUSES_WAKEUP or
+                        PowerManager.ON_AFTER_RELEASE,
+                        "DroidrunPortal:WakeScreen"
+                    )
+                    wakeLock.acquire(3000L)
+                    ApiResponse.Success("Screen woken up")
+                } else {
+                    ApiResponse.Success("Screen already on")
+                }
+            } else {
+                @Suppress("DEPRECATION")
+                val wakeLock = powerManager.newWakeLock(
+                    PowerManager.SCREEN_BRIGHT_WAKE_LOCK or
+                    PowerManager.ACQUIRE_CAUSES_WAKEUP or
+                    PowerManager.ON_AFTER_RELEASE,
+                    "DroidrunPortal:WakeScreen"
+                )
+                wakeLock.acquire(3000L)
+                ApiResponse.Success("Screen woken up")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to wake screen", e)
+            ApiResponse.Error("Failed to wake screen: ${e.message}")
+        }
+    }
+
+    fun lockScreen(): ApiResponse {
+        return try {
+            if (!DroidrunDeviceAdminReceiver.isAdminActive(context)) {
+                return ApiResponse.Error("Device Admin not enabled. Please enable it in Settings.")
+            }
+
+            val dpm = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
+            dpm.lockNow()
+            ApiResponse.Success("Screen locked")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to lock screen", e)
+            ApiResponse.Error("Failed to lock screen: ${e.message}")
+        }
+    }
+
+    fun screenOff(): ApiResponse {
+        return try {
+            screenOffOverlay.show()
+            ApiResponse.Success("Screen off overlay shown")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to show screen off overlay", e)
+            ApiResponse.Error("Failed to turn screen off: ${e.message}")
+        }
+    }
+
+    fun screenOn(): ApiResponse {
+        return try {
+            screenOffOverlay.hide()
+            ApiResponse.Success("Screen off overlay hidden")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to hide screen off overlay", e)
+            ApiResponse.Error("Failed to turn screen on: ${e.message}")
+        }
     }
 
     fun installApp(
