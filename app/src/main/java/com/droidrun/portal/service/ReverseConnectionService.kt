@@ -284,7 +284,11 @@ class ReverseConnectionService : Service() {
             if (!manager.getStreamRequestId().isNullOrBlank()) {
                 manager.notifyStreamStoppedAsync("ws_disconnected")
             }
-            manager.requestGracefulStop("ws_disconnected")
+            // 立即停止流和屏幕捕获，而非等待 10 分钟空闲超时
+            manager.stopStreamAsync {
+                // 流已停止，请求停止 ScreenCaptureService
+                ScreenCaptureService.requestStop("ws_disconnected")
+            }
         } else {
             ScreenCaptureService.requestStop("ws_disconnected")
         }

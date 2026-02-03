@@ -1,0 +1,3 @@
+[submodule "droidrun-portal"]
+	path = droidrun-portal
+	url = git@github.com:shellus/droidrun-portal.git
